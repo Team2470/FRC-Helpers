@@ -8,8 +8,8 @@
 enum ChannelController
 {
 	XBOX_CONTROLLER = 0,				//When we are using the logitech and xbox controllers
-	LOGITECH_CONTROLLER = 1,			//When we are using the logitech and xbox controllers
-	//FLIGHT_JOYSTICK = 1,				//When we are using the driver station
+	//LOGITECH_CONTROLLER = 1,			//When we are using the logitech and xbox controllers
+	FLIGHT_JOYSTICK = 1,				//When we are using the driver station
 	LEFT_DRIVE_JOYSTICK = 2,			//When we are using the driver station
 	LEFT_BUTTON_HUB = 3,				//When we are using the driver station
 	RIGHT_DRIVE_JOYSTICK = 4,			//When we are using the driver station
@@ -39,8 +39,9 @@ enum ChannelPWM
 enum ChannelAnalog
 {
 	//gyro slot 0 or 1?
-	ULTRASONIC_SENSOR = 0,
+	GYRO_SENSOR = 0,
 	ULTRASONIC_SENSOR_HATCH = 1, //placeholder
+	PRESSURE_SENSOR = 2
 };
 
 /**
@@ -49,15 +50,17 @@ enum ChannelAnalog
  */
 enum ChannelDigital
 {
-	PLEXIGLASS_LIGHT_CONTROL = 0,
-	FRONT_LEFT_ENCODER_CHANNEL_A = 1,
-	FRONT_LEFT_ENCODER_CHANNEL_B = 2,
-	BACK_LEFT_ENCODER_CHANNEL_A = 3,
-	BACK_LEFT_ENCODER_CHANNEL_B = 4,
-	FRONT_RIGHT_ENCODER_CHANNEL_A = 5,
-	FRONT_RIGHT_ENCODER_CHANNEL_B = 6,
-	BACK_RIGHT_ENCODER_CHANNEL_A = 7,
-	BACK_RIGHT_ENCODER_CHANNEL_B = 8
+	//PLEXIGLASS_LIGHT_CONTROL = 0,
+	FRONT_LEFT_ENCODER_CHANNEL_A = 0,
+	FRONT_LEFT_ENCODER_CHANNEL_B = 1,
+	BACK_LEFT_ENCODER_CHANNEL_A = 2,
+	BACK_LEFT_ENCODER_CHANNEL_B = 3,
+	FRONT_RIGHT_ENCODER_CHANNEL_A = 4,
+	FRONT_RIGHT_ENCODER_CHANNEL_B = 5,
+	BACK_RIGHT_ENCODER_CHANNEL_A = 6,
+	BACK_RIGHT_ENCODER_CHANNEL_B = 7,
+	FRONT_PNEUMATICS_SPIKE = 8,
+	BACK_PNEUMATICS_SPIKE = 9
 };
 
 /**
@@ -66,12 +69,14 @@ enum ChannelDigital
  */
 enum ChannelSolenoid
 {
-	FRONT_LEFT_SOLENOID = 0,	//Double Solenoid
-	BACK_LEFT_SOLENOID = 1,		//Double Solenoid
-	FRONT_RIGHT_SOLENOID = 2,	//Double Solenoid
-	BACK_RIGHT_SOLENOID = 3,	//Double Solenoid
-	HATCH_EXTEND_SOLENOID = 4,	//Double Solenoid
-	HATCH_POP_SOLENOID = 5		//Double Solenoid
+	FRONT_LEFT_SOLENOID = 0,		//Single Solenoid
+	BACK_LEFT_SOLENOID = 1,			//Single Solenoid
+	FRONT_RIGHT_SOLENOID = 3,		//Single Solenoid
+	BACK_RIGHT_SOLENOID = 2,		//Single Solenoid
+	HATCH_EXTEND_SOLENOID = 4,		//Single Solenoid
+	HATCH_POP_SOLENOID = 5,			//Single Solenoid
+	CLIMBER_EXTEND_FORWARDS = 6,	//Double Solenoid
+	CLIMBER_EXTEND_BACKWARDS = 7	//Double Solenoid
 };
 
 /**
@@ -80,10 +85,10 @@ enum ChannelSolenoid
  */
 enum ChannelPDP
 {
-	PDP_FRONT_LEFT_MOTOR = 0,
-	PDP_BACK_LEFT_MOTOR = 1,
-	PDP_FRONT_RIGHT_MOTOR = 2,
-	PDP_BACK_RIGHT_MOTOR = 3,
+	PDP_FRONT_LEFT_MOTOR = 1,
+	PDP_BACK_LEFT_MOTOR = 14,
+	PDP_FRONT_RIGHT_MOTOR = 0,
+	PDP_BACK_RIGHT_MOTOR = 15,
 	PDP_INTAKE_LEFT_MOTOR = 4,
 	PDP_INTAKE_RIGHT_MOTOR = 5,
 	PDP_LIMELIGHT_CAMERA = 6

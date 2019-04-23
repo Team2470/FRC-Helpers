@@ -1,7 +1,3 @@
-#include <iostream>
-#include <frc/Solenoid.h>
-#include <frc/DoubleSolenoid.h>
-#include <frc/Compressor.h>
 #include "pneumatic_helper.hpp"
 
 SingleSolenoid::SingleSolenoid(int solenoidChannel)
@@ -91,6 +87,11 @@ void Compressor::deactivate()
 	this->currentState = false;
 }
 
+void Compressor::lowPressureToggle()
+{
+	this->compressor->SetClosedLoopControl(!this->compressor->GetClosedLoopControl());
+}
+
 void Compressor::lowPressureActivate(bool state)
 {
 	this->compressor->SetClosedLoopControl(state);
@@ -135,4 +136,66 @@ void Compressor::clearStickyFaults()
 	this->notConnectedFaultSticky = this->compressor->GetCompressorNotConnectedStickyFault();
 	this->shortCircuitFault = this->compressor->GetCompressorShortedFault();
 	this->shortCircuitFaultSticky = this->compressor->GetCompressorShortedStickyFault();
+}
+
+PressureSensor::PressureSensor(int analogChannel, int knownPressureValue, double outputVoltageValue)
+{
+	pressureSensor = new frc::AnalogInput(analogChannel);
+
+	if (knownPressureValue != -1 && outputVoltageValue != -1)
+	{
+		setNormalizedVoltage(knownPressureValue, outputVoltageValue);
+	}
+}
+
+void PressureSensor::setNormalizedVoltage(int knownPressure, double outputVoltage)
+{
+	normalizedVoltageInput = (outputVoltage) / (0.004 * knownPressure + 0.1);
+}
+
+double PressureSensor::getVoltage()
+{
+	return pressureSensor->GetVoltage();
+}
+
+double PressureSensor::getVoltageOutput(double pressureValue, bool isNormalized = false)
+{
+	if (isNormalized)
+	{
+		return normalizedVoltageInput * (0.004 * pressureValue + 0.1);
+	}
+	else
+	{
+		return defaultVoltageInput * (0.004 * pressureValue + 0.1);
+	}
+}
+
+double PressureSensor::getPressure(bool isNormalized = false, double optionalVoltage = -1)
+{
+	if (isNormalized)
+	{
+		if (optionalVoltage == -1)
+		{
+			//use the sensor's output
+			return 250 * (pressureSensor->GetVoltage() / normalizedVoltageInput) - 25;
+		}
+		else
+		{
+			//check if an output voltage was given
+			return 250 * (optionalVoltage / normalizedVoltageInput) - 25;
+		}
+	}
+	else
+	{
+		if (optionalVoltage == -1)
+		{
+			//use the sensor's output
+			return 250 * (pressureSensor->GetVoltage() / defaultVoltageInput) - 25;
+		}
+		else
+		{
+			//check if an output voltage was given
+			return 250 * (optionalVoltage / defaultVoltageInput) - 25;
+		}
+	}
 }

@@ -2,12 +2,13 @@
 #define MECANUM_DRIVER_HELPER_HPP
 
 #include <frc/drive/MecanumDrive.h>
-#include <frc/AnalogGyro.h>
+#include <frc/ADXRS450_Gyro.h>
 #include <frc/Joystick.h>
 #include <frc/Spark.h>
+
 #include "sonar_helper.hpp"
-#include "vision_processing.hpp"
-#include "auto_alignment.hpp"
+#include "AutoAlignment.hpp"
+#include "encoder_helper.hpp"
 
 /**
  * @class		BjorgMecanumDrive
@@ -34,7 +35,10 @@ public:
 	float moveMultiplier = 1.0;
  	float shiftMultiplier = 1.0;
 	float rotateMultiplier = 1.0;
-	
+    bool resolutionNeeded = false;
+	bool disableMove = false;
+	bool disableShift = false;
+
 	/**
 	 * @constructor BjorgMecanumDrive
 	 * @description Construct the BjorgMecanumDrive.
@@ -48,14 +52,15 @@ public:
      * @param       gyroSensor       -- The installed gyro.
 	 */
 	BjorgMecanumDrive(
-		frc::Spark* frontLeftMotor, 
-		frc::Spark* backLeftMotor, 
-		frc::Spark* frontRightMotor, 
-		frc::Spark* backRightMotor,
+		frc::SpeedController* frontLeftMotor, 
+		frc::SpeedController* backLeftMotor, 
+		frc::SpeedController* frontRightMotor, 
+		frc::SpeedController* backRightMotor,
     	frc::Joystick* moveController, 
 		frc::Joystick* shiftController, 
 		frc::Joystick* rotateController,
-        frc::AnalogGyro* gyroSensor
+        frc::ADXRS450_Gyro* m_gyroSensor,
+        AutoAlignment* autoAlignment
 	);
 
 	/**
@@ -102,16 +107,25 @@ public:
 
 private:
     static constexpr bool UTILIZE_GYRO = false;
+    static constexpr float DEADZONE = 0.15;
+	static constexpr double MAX_SPEED = 1.0;
+	
 	float movementValue = 0.0;
     float shiftValue = 0.0;
 	float rotateValue = 0.0;
+    bool rotationResolved = false;
+    bool distanceResolved = false;
 
-    frc::MecanumDrive* robotDrive;
+    frc::MecanumDrive* m_robotDrive;
 	frc::Joystick* driveControllerMove;
 	frc::Joystick* driveControllerShift;
     frc::Joystick* driveControllerRotate;
-    frc::AnalogGyro* gyroSensor;
-    AutoAlignment* autoAlignment;
+    frc::ADXRS450_Gyro* m_gyroSensor;
+    AutoAlignment* m_autoAlignment;
+    // Encoder* encoderFrontLeft;
+    // Encoder* encoderFrontRight;
+    // Encoder* encoderBackLeft;
+    // Encoder* encoderBackRight;
 
 	/**
 	 * @function	setMovement
@@ -124,6 +138,13 @@ private:
 	 * @description Update the rotation value, to be used by the drive.
 	 */
 	void setRotate(bool rotateEn = true);
+
+	/**
+	 * @function    speedLimiter
+	 * @description Given any input it will return a max value
+	 */
+	double speedLimiter( double speed );
+	double speedLimiter( double speed, double max );
 };
 
 #endif
